@@ -37,6 +37,8 @@ const MapSection: React.FC = () => {
     libraries: libraries,
   });
 
+  console.log(map);
+
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
