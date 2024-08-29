@@ -12,7 +12,11 @@ type Location = {
   longitude: number;
 };
 
-type PlaceType = "restaurant" | "grocery" | "supermarket" | "pharmacy";
+type PlaceType =
+  | "restaurant"
+  | "grocery_supermarket"
+  | "supermarket"
+  | "pharmacy";
 
 type Place = {
   id: string;
@@ -23,10 +27,6 @@ type Place = {
   userRatingsTotal: number;
   openingHours: {
     openNow: boolean;
-    periods: Array<{
-      open: { day: number; time: string };
-      close: { day: number; time: string };
-    }>;
   };
 };
 
@@ -81,13 +81,22 @@ export const PlacesProvider: React.FC<{ children: React.ReactNode }> = ({
     });
   };
 
+  console.log(location?.latitude, location?.longitude);
+  // https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${location.latitude},${location.longitude}&radius=35000&type=${type}&key=${API_KEY}
   const fetchPlaces = useCallback(
     async (type: PlaceType, location: Location): Promise<Place[]> => {
-      const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${location.latitude},${location.longitude}&radius=35000&type=${type}&key=${API_KEY}`;
+      const url = `https://doorbel.up.railway.app/places/nearbysearch/json?location=${location.latitude},${location.longitude}&radius=35000&type=${type}`;
 
       try {
-        const response = await fetch(url);
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         const data = await response.json();
+
+        console.log(data);
 
         if (data.status === "OK") {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -134,7 +143,7 @@ export const PlacesProvider: React.FC<{ children: React.ReactNode }> = ({
           case "restaurant":
             setRestaurants(places);
             break;
-          case "grocery":
+          case "grocery_supermarket":
             setGroceries(places);
             break;
           case "supermarket":
@@ -158,7 +167,7 @@ export const PlacesProvider: React.FC<{ children: React.ReactNode }> = ({
     [refreshPlaces]
   );
   const refreshGroceries = useCallback(
-    () => refreshPlaces("grocery"),
+    () => refreshPlaces("grocery_supermarket"),
     [refreshPlaces]
   );
   const refreshSupermarkets = useCallback(

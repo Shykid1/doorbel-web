@@ -3,19 +3,13 @@ import { Outlet, useRoutes } from "react-router-dom";
 import Auth from "@/pages/Auth";
 import Dashboard from "@/pages/dashboard";
 import Home from "@/pages/Home";
-import Topnav from "@/components/shared/topnav";
+// import Topnav from "@/components/shared/topnav";
 
 export default function AppRouter() {
   const publicRoutes = [
     {
       path: "/",
-      element: <Topnav />,
-      children: [
-        {
-          element: <Home />,
-          index: true,
-        },
-      ],
+      element: <Home />,
     },
   ];
 
