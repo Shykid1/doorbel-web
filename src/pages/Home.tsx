@@ -1,11 +1,14 @@
-// import CategoryCard from "@/components/shared/category-card";
-// import { categories } from "@/assets/data/home";
+// import { useEffect, useState } from "react";
 // import { Link } from "react-router-dom";
-// import Topnav from "@/components/shared/topnav";
-// import { useEffect, useRef, useState } from "react";
+// import { motion } from "framer-motion";
 // import { usePlaces } from "@/context/AppProvider";
+// import Topnav from "@/components/shared/topnav";
+// import CategoryCard from "@/components/shared/category-card";
 // import ProductCard from "@/components/shared/product-card";
+// import { categories } from "@/assets/data/home";
 // import placeholderImage from "@/assets/images/placeholder.png";
+// import HeroSection from "@/components/shared/hero";
+// import LoadingSpinner from "@/components/shared/spinner";
 
 // type Place = {
 //   id: string;
@@ -21,58 +24,24 @@
 
 // type PlaceType = "restaurant" | "grocery" | "supermarket" | "pharmacy";
 
+// const fadeInUp = {
+//   hidden: { opacity: 0, y: 20 },
+//   visible: { opacity: 1, y: 0 },
+// };
+
+// const staggerChildren = {
+//   visible: {
+//     transition: {
+//       staggerChildren: 0.1,
+//     },
+//   },
+// };
+
 // const Home = () => {
-//   const sliderRef = useRef<HTMLDivElement>(null);
-//   const [isDragging, setIsDragging] = useState(false);
-//   const [startX, setStartX] = useState(0);
-//   const [scrollLeft, setScrollLeft] = useState(0);
 //   const [mixedTopPlaces, setMixedTopPlaces] = useState<Place[]>([]);
 //   const [topFiveRestaurants, setTopFiveRestaurants] = useState<Place[]>([]);
-
-//   const handleMouseDown = (e: React.MouseEvent) => {
-//     setIsDragging(true);
-//     setStartX(e.pageX - (sliderRef.current?.offsetLeft || 0));
-//     setScrollLeft(sliderRef.current?.scrollLeft || 0);
-//   };
-
-//   const handleMouseLeave = () => {
-//     setIsDragging(false);
-//   };
-
-//   const handleMouseUp = () => {
-//     setIsDragging(false);
-//   };
-
-//   const handleMouseMove = (e: React.MouseEvent) => {
-//     if (!isDragging) return;
-//     e.preventDefault();
-//     const x = e.pageX - (sliderRef.current?.offsetLeft || 0);
-//     const walk = (x - startX) * 2; // Adjust the scroll speed
-//     if (sliderRef.current) {
-//       sliderRef.current.scrollLeft = scrollLeft - walk;
-//     }
-//   };
-
-//   const handleTouchStart = (e: React.TouchEvent) => {
-//     setIsDragging(true);
-//     setStartX(e.touches[0].pageX - (sliderRef.current?.offsetLeft || 0));
-//     setScrollLeft(sliderRef.current?.scrollLeft || 0);
-//   };
-
-//   const handleTouchEnd = () => {
-//     setIsDragging(false);
-//   };
-
-//   const handleTouchMove = (e: React.TouchEvent) => {
-//     if (!isDragging) return;
-//     const x = e.touches[0].pageX - (sliderRef.current?.offsetLeft || 0);
-//     const walk = (x - startX) * 2; // Adjust the scroll speed
-//     if (sliderRef.current) {
-//       sliderRef.current.scrollLeft = scrollLeft - walk;
-//     }
-//   };
-
-//   const { restaurants, groceries, pharmacies, supermarkets } = usePlaces();
+//   const { restaurants, groceries, pharmacies, supermarkets, isLoading } =
+//     usePlaces();
 
 //   useEffect(() => {
 //     const getTopTwo = (places: Place[], type: PlaceType) =>
@@ -88,102 +57,129 @@
 //       ...getTopTwo(pharmacies, "pharmacy"),
 //     ];
 
-//     // Shuffle the combined array
-//     const shuffled = allTopPlaces.sort(() => 0.5 - Math.random());
-//     const firstFive = shuffled.slice(0, 5);
-
-//     setMixedTopPlaces(firstFive);
+//     setMixedTopPlaces(allTopPlaces.sort(() => 0.5 - Math.random()).slice(0, 5));
+//     setTopFiveRestaurants(
+//       restaurants
+//         .sort((a, b) => b.userRatingsTotal - a.userRatingsTotal)
+//         .slice(0, 5)
+//     );
 //   }, [restaurants, supermarkets, groceries, pharmacies]);
 
-//   useEffect(() => {
-//     const getTopFiveRestaurants = () => {
-//       const topFive = restaurants
-//         .sort((a, b) => b.userRatingsTotal - a.userRatingsTotal)
-//         .slice(0, 5);
-//       setTopFiveRestaurants(topFive);
-//     };
-
-//     getTopFiveRestaurants();
-//   }, [restaurants]);
-
 //   return (
-//     <div className="flex w-full flex-col h-[100dvh]">
+//     <div className="flex w-full flex-col min-h-screen">
 //       <Topnav />
-//       <div
-//         ref={sliderRef}
-//         className="flex mt-1 lg:mt-4 space-x-4 overflow-x-scroll no-scrollbar md:overflow-x-auto md:flex-wrap md:justify-center cursor-grab active:cursor-grabbing"
-//         onMouseDown={handleMouseDown}
-//         onMouseLeave={handleMouseLeave}
-//         onMouseUp={handleMouseUp}
-//         onMouseMove={handleMouseMove}
-//         onTouchStart={handleTouchStart}
-//         onTouchEnd={handleTouchEnd}
-//         onTouchMove={handleTouchMove}
-//       >
-//         {categories.map((category, index) => (
-//           <Link to={`/category/${category.text}`} key={index}>
-//             <CategoryCard imageUrl={category.img} title={category.text} />
-//           </Link>
-//         ))}
-//       </div>
+//       <main className="flex-grow">
+//         <motion.section
+//           initial="hidden"
+//           whileInView="visible"
+//           viewport={{ once: true, amount: 0.5 }}
+//           variants={fadeInUp}
+//           className="mb-12"
+//         >
+//           <HeroSection />
+//         </motion.section>
 
-//       {/* Top Picks */}
-//       <h1 className="text-2xl font-semibold mt-4 px-4 text-center p-8">
-//         Top Picks
-//       </h1>
-//       <div
-//         ref={sliderRef}
-//         className="flex space-x-5 overflow-x-scroll no-scrollbar md:overflow-x-auto md:flex-wrap md:justify-center cursor-grab active:cursor-grabbing"
-//         onMouseDown={handleMouseDown}
-//         onMouseLeave={handleMouseLeave}
-//         onMouseUp={handleMouseUp}
-//         onMouseMove={handleMouseMove}
-//         onTouchStart={handleTouchStart}
-//         onTouchEnd={handleTouchEnd}
-//         onTouchMove={handleTouchMove}
-//       >
-//         {mixedTopPlaces.map((place, index) => (
-//           <Link to={`/place/${place.id}`} key={index}>
-//             <ProductCard
-//               name={place.name}
-//               imageUrl={place.photoUrl || placeholderImage}
-//               address={place.address}
-//               userRatingsTotal={place.userRatingsTotal}
-//               rating={place.rating}
-//               openingHours={place.openingHours}
-//             />
-//           </Link>
-//         ))}
-//       </div>
+//         <motion.section
+//           initial="hidden"
+//           whileInView="visible"
+//           viewport={{ once: true, amount: 0.5 }}
+//           variants={staggerChildren}
+//           className="mb-12"
+//         >
+//           <motion.h2
+//             variants={fadeInUp}
+//             className="text-2xl font-semibold mb-6 text-center"
+//           >
+//             Categories
+//           </motion.h2>
+//           <motion.div
+//             variants={staggerChildren}
+//             className="flex flex-wrap justify-center gap-4"
+//           >
+//             {categories.map((category, index) => (
+//               <motion.div key={index} variants={fadeInUp}>
+//                 <Link to={`/category/${category.text}`}>
+//                   <CategoryCard imageUrl={category.img} title={category.text} />
+//                 </Link>
+//               </motion.div>
+//             ))}
+//           </motion.div>
+//         </motion.section>
 
-//       {/* Top Restaurants */}
-//       <h1 className="text-2xl font-semibold mt-4 px-4 text-center p-8">
-//         Top Restaurants
-//       </h1>
-//       <div
-//         ref={sliderRef}
-//         className="flex space-x-5 overflow-x-scroll no-scrollbar md:overflow-x-auto md:flex-wrap md:justify-center cursor-grab active:cursor-grabbing"
-//         onMouseDown={handleMouseDown}
-//         onMouseLeave={handleMouseLeave}
-//         onMouseUp={handleMouseUp}
-//         onMouseMove={handleMouseMove}
-//         onTouchStart={handleTouchStart}
-//         onTouchEnd={handleTouchEnd}
-//         onTouchMove={handleTouchMove}
-//       >
-//         {topFiveRestaurants.map((place, index) => (
-//           <Link to={`/place/${place.id}`} key={index}>
-//             <ProductCard
-//               name={place.name}
-//               imageUrl={place.photoUrl || placeholderImage}
-//               address={place.address}
-//               userRatingsTotal={place.userRatingsTotal}
-//               rating={place.rating}
-//               openingHours={place.openingHours}
-//             />
-//           </Link>
-//         ))}
-//       </div>
+//         <motion.section
+//           initial="hidden"
+//           whileInView="visible"
+//           viewport={{ once: true, amount: 0.5 }}
+//           variants={staggerChildren}
+//           className="mb-12 px-4"
+//         >
+//           <motion.h2 className="text-2xl font-semibold mb-6 text-center">
+//             Top Picks
+//           </motion.h2>
+//           {isLoading ? (
+//             <div className="flex justify-center items-center h-64">
+//               <LoadingSpinner />
+//             </div>
+//           ) : (
+//             <motion.div
+//               variants={staggerChildren}
+//               className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 justify-items-center"
+//             >
+//               {mixedTopPlaces.map((place, index) => (
+//                 <motion.div key={index} initial="active">
+//                   <Link to={`/place/${place.id}`}>
+//                     <ProductCard
+//                       name={place.name}
+//                       imageUrl={place.photoUrl || placeholderImage}
+//                       address={place.address}
+//                       userRatingsTotal={place.userRatingsTotal}
+//                       rating={place.rating}
+//                       openingHours={place.openingHours}
+//                     />
+//                   </Link>
+//                 </motion.div>
+//               ))}
+//             </motion.div>
+//           )}
+//         </motion.section>
+
+//         <motion.section
+//           initial="hidden"
+//           whileInView="visible"
+//           viewport={{ once: true, amount: 0.5 }}
+//           variants={staggerChildren}
+//           className="mb-12 px-4"
+//         >
+//           <motion.h2 className="text-2xl font-semibold mb-6 text-center">
+//             Top Restaurants
+//           </motion.h2>
+//           {isLoading ? (
+//             <div className="flex justify-center items-center h-64">
+//               <LoadingSpinner />
+//             </div>
+//           ) : (
+//             <motion.div
+//               variants={staggerChildren}
+//               className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 justify-items-center"
+//             >
+//               {topFiveRestaurants.map((place, index) => (
+//                 <motion.div key={index} initial="active">
+//                   <Link to={`/place/${place.id}`}>
+//                     <ProductCard
+//                       name={place.name}
+//                       imageUrl={place.photoUrl || placeholderImage}
+//                       address={place.address}
+//                       userRatingsTotal={place.userRatingsTotal}
+//                       rating={place.rating}
+//                       openingHours={place.openingHours}
+//                     />
+//                   </Link>
+//                 </motion.div>
+//               ))}
+//             </motion.div>
+//           )}
+//         </motion.section>
+//       </main>
 //     </div>
 //   );
 // };
@@ -192,12 +188,16 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import { usePlaces } from "@/context/AppProvider";
 import Topnav from "@/components/shared/topnav";
 import CategoryCard from "@/components/shared/category-card";
 import ProductCard from "@/components/shared/product-card";
 import { categories } from "@/assets/data/home";
 import placeholderImage from "@/assets/images/placeholder.png";
+import HeroSection from "@/components/shared/hero";
+import LoadingSpinner from "@/components/shared/spinner";
+import MapSection from "@/components/shared/map";
 
 type Place = {
   id: string;
@@ -213,87 +213,167 @@ type Place = {
 
 type PlaceType = "restaurant" | "grocery" | "supermarket" | "pharmacy";
 
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+};
+
+const staggerChildren = {
+  visible: {
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
 const Home = () => {
-  const [mixedTopPlaces, setMixedTopPlaces] = useState<Place[]>([]);
-  const [topFiveRestaurants, setTopFiveRestaurants] = useState<Place[]>([]);
-  const { restaurants, groceries, pharmacies, supermarkets } = usePlaces();
+  const [topRestaurants, setTopRestaurants] = useState<Place[]>([]);
+  const [topGroceries, setTopGroceries] = useState<Place[]>([]);
+  const [topSupermarkets, setTopSupermarkets] = useState<Place[]>([]);
+  const [topPharmacies, setTopPharmacies] = useState<Place[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<PlaceType | "all">(
+    "all"
+  );
+  const { restaurants, groceries, pharmacies, supermarkets, isLoading } =
+    usePlaces();
 
   useEffect(() => {
-    const getTopTwo = (places: Place[], type: PlaceType) =>
+    const getTopFive = (places: Place[]) =>
       places
-        .map((place) => ({ ...place, type }))
         .sort((a, b) => b.userRatingsTotal - a.userRatingsTotal)
-        .slice(0, 2);
+        .slice(0, 5);
 
-    const allTopPlaces = [
-      ...getTopTwo(restaurants, "restaurant"),
-      ...getTopTwo(supermarkets, "supermarket"),
-      ...getTopTwo(groceries, "grocery"),
-      ...getTopTwo(pharmacies, "pharmacy"),
-    ];
+    setTopRestaurants(getTopFive(restaurants));
+    setTopGroceries(getTopFive(groceries));
+    setTopSupermarkets(getTopFive(supermarkets));
+    setTopPharmacies(getTopFive(pharmacies));
+  }, [restaurants, groceries, supermarkets, pharmacies]);
 
-    setMixedTopPlaces(allTopPlaces.sort(() => 0.5 - Math.random()).slice(0, 5));
-    setTopFiveRestaurants(
-      restaurants
-        .sort((a, b) => b.userRatingsTotal - a.userRatingsTotal)
-        .slice(0, 5)
-    );
-  }, [restaurants, supermarkets, groceries, pharmacies]);
+  const filteredPlaces = () => {
+    switch (selectedCategory) {
+      case "restaurant":
+        return topRestaurants;
+      case "grocery":
+        return topGroceries;
+      case "supermarket":
+        return topSupermarkets;
+      case "pharmacy":
+        return topPharmacies;
+      default:
+        return [
+          ...topRestaurants,
+          ...topGroceries,
+          ...topSupermarkets,
+          ...topPharmacies,
+        ].slice(0, 5);
+    }
+  };
 
   return (
     <div className="flex w-full flex-col min-h-screen">
       <Topnav />
-      <main className="flex-grow px-4 py-8">
-        <section className="mb-12">
-          <h2 className="text-2xl font-semibold mb-6 text-center">
+      <main className="flex-grow">
+        <motion.section
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.5 }}
+          variants={fadeInUp}
+          className="mb-12"
+        >
+          <HeroSection />
+        </motion.section>
+
+        <motion.section
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.5 }}
+          variants={staggerChildren}
+          className="mb-12"
+        >
+          <motion.h2
+            variants={fadeInUp}
+            className="text-2xl font-semibold mb-6 text-center"
+          >
             Categories
-          </h2>
-          <div className="flex flex-wrap justify-center gap-4">
+          </motion.h2>
+          <motion.div
+            variants={staggerChildren}
+            className="flex flex-wrap justify-center gap-4"
+          >
             {categories.map((category, index) => (
-              <Link to={`/category/${category.text}`} key={index}>
-                <CategoryCard imageUrl={category.img} title={category.text} />
-              </Link>
+              <motion.div key={index} variants={fadeInUp}>
+                <Link to={`/category/${category.text}`}>
+                  <CategoryCard imageUrl={category.img} title={category.text} />
+                </Link>
+              </motion.div>
             ))}
-          </div>
-        </section>
+          </motion.div>
+        </motion.section>
 
-        <section className="mb-12">
-          <h2 className="text-2xl font-semibold mb-6 text-center">Top Picks</h2>
-          <div className="flex flex-wrap justify-center gap-6">
-            {mixedTopPlaces.map((place, index) => (
-              <Link to={`/place/${place.id}`} key={index}>
-                <ProductCard
-                  name={place.name}
-                  imageUrl={place.photoUrl || placeholderImage}
-                  address={place.address}
-                  userRatingsTotal={place.userRatingsTotal}
-                  rating={place.rating}
-                  openingHours={place.openingHours}
-                />
-              </Link>
-            ))}
+        <motion.section
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.5 }}
+          variants={staggerChildren}
+          className="mb-12 px-4"
+        >
+          <motion.h2 className="text-2xl font-semibold mb-6 text-center">
+            Top Picks
+          </motion.h2>
+          <div className="flex justify-center mb-4">
+            <select
+              value={selectedCategory}
+              onChange={(e) =>
+                setSelectedCategory(e.target.value as PlaceType | "all")
+              }
+              className="p-2 border rounded"
+            >
+              <option value="all">All</option>
+              <option value="restaurant">Restaurants</option>
+              <option value="grocery">Groceries</option>
+              <option value="supermarket">Supermarkets</option>
+              <option value="pharmacy">Pharmacies</option>
+            </select>
           </div>
-        </section>
+          {isLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <LoadingSpinner />
+            </div>
+          ) : (
+            <motion.div
+              variants={staggerChildren}
+              className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 justify-items-center"
+            >
+              {filteredPlaces().map((place, index) => (
+                <motion.div key={index} initial="active">
+                  <Link to={`/place/${place.id}`}>
+                    <ProductCard
+                      name={place.name}
+                      imageUrl={place.photoUrl || placeholderImage}
+                      address={place.address}
+                      userRatingsTotal={place.userRatingsTotal}
+                      rating={place.rating}
+                      openingHours={place.openingHours}
+                    />
+                  </Link>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </motion.section>
 
-        <section>
-          <h2 className="text-2xl font-semibold mb-6 text-center">
-            Top Restaurants
-          </h2>
-          <div className="flex flex-wrap justify-center gap-6">
-            {topFiveRestaurants.map((place, index) => (
-              <Link to={`/place/${place.id}`} key={index}>
-                <ProductCard
-                  name={place.name}
-                  imageUrl={place.photoUrl || placeholderImage}
-                  address={place.address}
-                  userRatingsTotal={place.userRatingsTotal}
-                  rating={place.rating}
-                  openingHours={place.openingHours}
-                />
-              </Link>
-            ))}
-          </div>
-        </section>
+        <motion.section
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.5 }}
+          variants={staggerChildren}
+          className="mb-12 px-4"
+        >
+          <motion.h2 className="text-2xl font-semibold mb-6 text-center">
+            Find Your Route
+          </motion.h2>
+          <MapSection />
+        </motion.section>
       </main>
     </div>
   );

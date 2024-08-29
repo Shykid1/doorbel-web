@@ -20,21 +20,21 @@ const ProductCard: React.FC<ProductCardProps> = ({
   openingHours,
 }) => {
   return (
-    <div className="w-64 bg-white items-center flex flex-col shadow-xl">
+    <div className="w-64 h-[332px] bg-white items-center flex flex-col shadow-xl rounded-md">
       <div className="rounded-md">
         <img
           src={imageUrl}
           alt="product"
-          className="w-full h-40 object-cover"
+          className="w-full h-40 object-cover rounded-md"
         />
       </div>
-      <div className="p-4">
-        <h1 className="text-xl font-semibold">{name}</h1>
-        <p className="text-gray-500">{address}</p>
-        <p className="text-gray-500">
-          {rating} {""} {`(${userRatingsTotal})`}
+      <div className="p-4 gap-1">
+        <h1 className="text-lg font-semibold text-center">{name}</h1>
+        <p className="text-gray-500 text-sm">{address}</p>
+        <p className="text-gray-500 text-sm">
+          {rating} {"⭐"} {""} {`(${userRatingsTotal})`}
         </p>
-        <p className="text-gray-500">
+        <p className="text-gray-500 text-sm">
           {openingHours.openNow ? "Open" : "Closed"}
         </p>
       </div>

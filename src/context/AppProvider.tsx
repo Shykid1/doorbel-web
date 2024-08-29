@@ -28,6 +28,7 @@ type Place = {
   openingHours: {
     openNow: boolean;
   };
+  type?: PlaceType;
 };
 
 type PlacesContextType = {
@@ -81,7 +82,6 @@ export const PlacesProvider: React.FC<{ children: React.ReactNode }> = ({
     });
   };
 
-  console.log(location?.latitude, location?.longitude);
   // https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${location.latitude},${location.longitude}&radius=35000&type=${type}&key=${API_KEY}
   const fetchPlaces = useCallback(
     async (type: PlaceType, location: Location): Promise<Place[]> => {
@@ -95,8 +95,6 @@ export const PlacesProvider: React.FC<{ children: React.ReactNode }> = ({
           },
         });
         const data = await response.json();
-
-        console.log(data);
 
         if (data.status === "OK") {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -116,6 +114,7 @@ export const PlacesProvider: React.FC<{ children: React.ReactNode }> = ({
                   periods: place.opening_hours.periods || [],
                 }
               : { openNow: false, periods: [] },
+            type,
           }));
         } else {
           throw new Error(`API returned status: ${data.status}`);
