@@ -9,6 +9,7 @@
 // import placeholderImage from "@/assets/images/placeholder.png";
 // import HeroSection from "@/components/shared/hero";
 // import LoadingSpinner from "@/components/shared/spinner";
+// import MapSection from "@/components/shared/map";
 
 // type Place = {
 //   id: string;
@@ -38,32 +39,47 @@
 // };
 
 // const Home = () => {
-//   const [mixedTopPlaces, setMixedTopPlaces] = useState<Place[]>([]);
-//   const [topFiveRestaurants, setTopFiveRestaurants] = useState<Place[]>([]);
+//   const [topRestaurants, setTopRestaurants] = useState<Place[]>([]);
+//   const [topGroceries, setTopGroceries] = useState<Place[]>([]);
+//   const [topSupermarkets, setTopSupermarkets] = useState<Place[]>([]);
+//   const [topPharmacies, setTopPharmacies] = useState<Place[]>([]);
+//   const [selectedCategory, setSelectedCategory] = useState<PlaceType | "all">(
+//     "all"
+//   );
 //   const { restaurants, groceries, pharmacies, supermarkets, isLoading } =
 //     usePlaces();
 
 //   useEffect(() => {
-//     const getTopTwo = (places: Place[], type: PlaceType) =>
+//     const getTopFive = (places: Place[]) =>
 //       places
-//         .map((place) => ({ ...place, type }))
 //         .sort((a, b) => b.userRatingsTotal - a.userRatingsTotal)
-//         .slice(0, 2);
+//         .slice(0, 5);
 
-//     const allTopPlaces = [
-//       ...getTopTwo(restaurants, "restaurant"),
-//       ...getTopTwo(supermarkets, "supermarket"),
-//       ...getTopTwo(groceries, "grocery"),
-//       ...getTopTwo(pharmacies, "pharmacy"),
-//     ];
+//     setTopRestaurants(getTopFive(restaurants));
+//     setTopGroceries(getTopFive(groceries));
+//     setTopSupermarkets(getTopFive(supermarkets));
+//     setTopPharmacies(getTopFive(pharmacies));
+//   }, [restaurants, groceries, supermarkets, pharmacies]);
 
-//     setMixedTopPlaces(allTopPlaces.sort(() => 0.5 - Math.random()).slice(0, 5));
-//     setTopFiveRestaurants(
-//       restaurants
-//         .sort((a, b) => b.userRatingsTotal - a.userRatingsTotal)
-//         .slice(0, 5)
-//     );
-//   }, [restaurants, supermarkets, groceries, pharmacies]);
+//   const filteredPlaces = () => {
+//     switch (selectedCategory) {
+//       case "restaurant":
+//         return topRestaurants;
+//       case "grocery":
+//         return topGroceries;
+//       case "supermarket":
+//         return topSupermarkets;
+//       case "pharmacy":
+//         return topPharmacies;
+//       default:
+//         return [
+//           ...topRestaurants,
+//           ...topGroceries,
+//           ...topSupermarkets,
+//           ...topPharmacies,
+//         ].slice(0, 5);
+//     }
+//   };
 
 //   return (
 //     <div className="flex w-full flex-col min-h-screen">
@@ -116,6 +132,21 @@
 //           <motion.h2 className="text-2xl font-semibold mb-6 text-center">
 //             Top Picks
 //           </motion.h2>
+//           <div className="flex justify-center mb-4">
+//             <select
+//               value={selectedCategory}
+//               onChange={(e) =>
+//                 setSelectedCategory(e.target.value as PlaceType | "all")
+//               }
+//               className="p-2 border rounded"
+//             >
+//               <option value="all">All</option>
+//               <option value="restaurant">Restaurants</option>
+//               <option value="grocery">Groceries</option>
+//               <option value="supermarket">Supermarkets</option>
+//               <option value="pharmacy">Pharmacies</option>
+//             </select>
+//           </div>
 //           {isLoading ? (
 //             <div className="flex justify-center items-center h-64">
 //               <LoadingSpinner />
@@ -125,7 +156,7 @@
 //               variants={staggerChildren}
 //               className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 justify-items-center"
 //             >
-//               {mixedTopPlaces.map((place, index) => (
+//               {filteredPlaces().map((place, index) => (
 //                 <motion.div key={index} initial="active">
 //                   <Link to={`/place/${place.id}`}>
 //                     <ProductCard
@@ -151,33 +182,9 @@
 //           className="mb-12 px-4"
 //         >
 //           <motion.h2 className="text-2xl font-semibold mb-6 text-center">
-//             Top Restaurants
+//             Search a Place by Location
 //           </motion.h2>
-//           {isLoading ? (
-//             <div className="flex justify-center items-center h-64">
-//               <LoadingSpinner />
-//             </div>
-//           ) : (
-//             <motion.div
-//               variants={staggerChildren}
-//               className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 justify-items-center"
-//             >
-//               {topFiveRestaurants.map((place, index) => (
-//                 <motion.div key={index} initial="active">
-//                   <Link to={`/place/${place.id}`}>
-//                     <ProductCard
-//                       name={place.name}
-//                       imageUrl={place.photoUrl || placeholderImage}
-//                       address={place.address}
-//                       userRatingsTotal={place.userRatingsTotal}
-//                       rating={place.rating}
-//                       openingHours={place.openingHours}
-//                     />
-//                   </Link>
-//                 </motion.div>
-//               ))}
-//             </motion.div>
-//           )}
+//           <MapSection />
 //         </motion.section>
 //       </main>
 //     </div>
@@ -288,6 +295,19 @@ const Home = () => {
           whileInView="visible"
           viewport={{ once: true, amount: 0.5 }}
           variants={staggerChildren}
+          className="mb-12 px-4"
+        >
+          <motion.h2 className="text-2xl font-semibold mb-6 text-center">
+            Search a Place by Location
+          </motion.h2>
+          <MapSection />
+        </motion.section>
+
+        <motion.section
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.5 }}
+          variants={staggerChildren}
           className="mb-12"
         >
           <motion.h2
@@ -360,19 +380,6 @@ const Home = () => {
               ))}
             </motion.div>
           )}
-        </motion.section>
-
-        <motion.section
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.5 }}
-          variants={staggerChildren}
-          className="mb-12 px-4"
-        >
-          <motion.h2 className="text-2xl font-semibold mb-6 text-center">
-            Find Your Route
-          </motion.h2>
-          <MapSection />
         </motion.section>
       </main>
     </div>
