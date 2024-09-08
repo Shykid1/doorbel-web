@@ -7,6 +7,7 @@ import Services from "@/pages/Services";
 import AboutPage from "@/pages/About";
 import Contact from "@/pages/Contact";
 import DeliveryOrdersPage from "@/pages/Orders";
+import FindRiderPage from "@/pages/FindRider";
 // import Topnav from "@/components/shared/topnav";
 
 export default function AppRouter() {
@@ -30,6 +31,10 @@ export default function AppRouter() {
     {
       path: "/orders",
       element: <DeliveryOrdersPage />,
+    },
+    {
+      path: "/find-rider",
+      element: <FindRiderPage />,
     },
   ];
 

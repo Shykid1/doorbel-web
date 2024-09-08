@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   GoogleMap,
   useJsApiLoader,
-  Marker,
   DirectionsRenderer,
 } from "@react-google-maps/api";
-import { StandaloneSearchBox } from "@react-google-maps/api";
 import {
   Dialog,
   DialogContent,
@@ -17,7 +16,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-const libraries: ("places" | "geometry" | "drawing")[] = ["places"];
+const libraries: ("places" | "geometry" | "drawing" | "marker")[] = [
+  "places",
+  "marker",
+];
 
 const mapContainerStyle = {
   width: "100%",
@@ -39,15 +41,61 @@ const MapSection: React.FC = () => {
   const [currentCoords, setCurrentCoords] = useState(defaultCenter);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [pickup, setPickup] = useState("");
+  const [marker, setMarker] =
+    useState<google.maps.marker.AdvancedMarkerElement | null>(null);
+  const [autocomplete, setAutocomplete] =
+    useState<google.maps.places.AutocompleteService | null>(null);
+  const [predictions, setPredictions] = useState<
+    google.maps.places.AutocompletePrediction[]
+  >([]);
 
-  const searchBoxRef = useRef<google.maps.places.SearchBox | null>(null);
+  const pickupInputRef = useRef<HTMLInputElement>(null);
 
   const API_KEY = process.env.REACT_APP_GOOGLE_PLACES_API_KEY || "";
+  const MAP_ID = process.env.REACT_APP_GOOGLE_MAP_ID || "";
 
   const { isLoaded, loadError } = useJsApiLoader({
     googleMapsApiKey: API_KEY,
     libraries: libraries,
   });
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isLoaded && !autocomplete) {
+      setAutocomplete(new google.maps.places.AutocompleteService());
+    }
+  }, [isLoaded, autocomplete]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setPickup(value);
+
+    if (value.length > 0 && autocomplete) {
+      autocomplete.getPlacePredictions(
+        { input: value },
+        (predictions, status) => {
+          if (
+            status === google.maps.places.PlacesServiceStatus.OK &&
+            predictions
+          ) {
+            setPredictions(predictions);
+          } else {
+            setPredictions([]);
+          }
+        }
+      );
+    } else {
+      setPredictions([]);
+    }
+  };
+
+  const handlePredictionClick = (
+    prediction: google.maps.places.AutocompletePrediction
+  ) => {
+    setPickup(prediction.description);
+    setPredictions([]);
+  };
 
   const reverseGeocode = useCallback(
     (lat: number, lng: number) => {
@@ -89,6 +137,20 @@ const MapSection: React.FC = () => {
     }
   }, [isLoaded, reverseGeocode]);
 
+  useEffect(() => {
+    if (map && currentCoords.lat !== 0 && currentCoords.lng !== 0) {
+      if (marker) {
+        marker.position = currentCoords;
+      } else {
+        const newMarker = new google.maps.marker.AdvancedMarkerElement({
+          map,
+          position: currentCoords,
+        });
+        setMarker(newMarker);
+      }
+    }
+  }, [map, currentCoords, marker]);
+
   const calculateRoute = useCallback(() => {
     if (!isLoaded || !pickup) return;
     const directionsService = new google.maps.DirectionsService();
@@ -118,15 +180,7 @@ const MapSection: React.FC = () => {
   };
 
   const findRider = () => {
-    console.log("Finding a rider...");
-    // Implement rider finding logic here
-  };
-
-  const onPlacesChanged = () => {
-    const places = searchBoxRef.current?.getPlaces();
-    if (places && places.length > 0) {
-      setPickup(places[0].formatted_address || "");
-    }
+    navigate("/find-rider");
   };
 
   const onMapLoad = useCallback((map: google.maps.Map) => {
@@ -135,6 +189,10 @@ const MapSection: React.FC = () => {
 
   if (loadError) return <div>Error loading maps</div>;
   if (!isLoaded) return <div>Loading maps...</div>;
+
+  const mapOptions = {
+    mapId: MAP_ID,
+  };
 
   return (
     <div className="map-section">
@@ -155,18 +213,27 @@ const MapSection: React.FC = () => {
                 <label htmlFor="pickup" className="text-right">
                   Pickup
                 </label>
-                <div className="col-span-3">
-                  <StandaloneSearchBox
-                    onLoad={(ref) => (searchBoxRef.current = ref)}
-                    onPlacesChanged={onPlacesChanged}
-                  >
-                    <Input
-                      id="pickup"
-                      placeholder="Enter pickup location"
-                      value={pickup}
-                      onChange={(e) => setPickup(e.target.value)}
-                    />
-                  </StandaloneSearchBox>
+                <div className="col-span-3 relative">
+                  <Input
+                    id="pickup"
+                    placeholder="Enter pickup location"
+                    value={pickup}
+                    onChange={handleInputChange}
+                    ref={pickupInputRef}
+                  />
+                  {predictions.length > 0 && (
+                    <ul className="absolute z-10 w-full bg-white border border-gray-300 mt-1 max-h-60 overflow-auto">
+                      {predictions.map((prediction) => (
+                        <li
+                          key={prediction.place_id}
+                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                          onClick={() => handlePredictionClick(prediction)}
+                        >
+                          {prediction.description}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               </div>
               <div className="grid grid-cols-4 items-center gap-4">
@@ -201,18 +268,8 @@ const MapSection: React.FC = () => {
           center={currentCoords}
           zoom={14}
           onLoad={onMapLoad}
+          options={mapOptions}
         >
-          {map &&
-            currentCoords &&
-            currentCoords.lat !== 0 &&
-            currentCoords.lng !== 0 && (
-              <Marker
-                position={currentCoords}
-                icon={{
-                  url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
-                }}
-              />
-            )}
           {directionsResponse && (
             <DirectionsRenderer directions={directionsResponse} />
           )}

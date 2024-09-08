@@ -295,19 +295,6 @@ const Home = () => {
           whileInView="visible"
           viewport={{ once: true, amount: 0.5 }}
           variants={staggerChildren}
-          className="mb-12 px-4"
-        >
-          <motion.h2 className="text-2xl font-semibold mb-6 text-center">
-            Search a Place by Location
-          </motion.h2>
-          <MapSection />
-        </motion.section>
-
-        <motion.section
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.5 }}
-          variants={staggerChildren}
           className="mb-12"
         >
           <motion.h2
@@ -328,6 +315,19 @@ const Home = () => {
               </motion.div>
             ))}
           </motion.div>
+        </motion.section>
+
+        <motion.section
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.5 }}
+          variants={staggerChildren}
+          className="mb-12 px-4"
+        >
+          <motion.h2 className="text-2xl font-semibold mb-6 text-center">
+            Search a Place by Location
+          </motion.h2>
+          <MapSection />
         </motion.section>
 
         <motion.section
