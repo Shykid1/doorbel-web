@@ -180,7 +180,9 @@ const MapSection: React.FC = () => {
   };
 
   const findRider = () => {
-    navigate("/find-rider");
+    navigate("/find-rider", {
+      state: { pickup, destination: currentLocation },
+    });
   };
 
   const onMapLoad = useCallback((map: google.maps.Map) => {
