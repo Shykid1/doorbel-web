@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { usePlaces } from "@/context/AppProvider";
-import Topnav from "@/components/shared/topnav";
 import CategoryCard from "@/components/shared/category-card";
 import ProductCard from "@/components/shared/product-card";
 import { categories } from "@/assets/data/home";
@@ -83,7 +82,6 @@ const Home = () => {
 
   return (
     <div className="flex w-full flex-col min-h-screen">
-      <Topnav />
       <main className="flex-grow">
         <motion.section
           initial="hidden"

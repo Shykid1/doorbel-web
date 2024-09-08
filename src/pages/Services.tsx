@@ -1,194 +1,6 @@
-// import React from "react";
-// import { motion } from "framer-motion";
-// import { Link } from "react-router-dom";
-// import Topnav from "@/components/shared/topnav";
-// import { categories } from "@/assets/data/home";
-// import CategoryCard from "@/components/shared/category-card";
-// import { Utensils, ShoppingCart, BriefcaseMedical, Zap } from "lucide-react";
-
-// const fadeInUp = {
-//   hidden: { opacity: 0, y: 20 },
-//   visible: { opacity: 1, y: 0 },
-// };
-
-// const staggerChildren = {
-//   visible: {
-//     transition: {
-//       staggerChildren: 0.1,
-//     },
-//   },
-// };
-
-// const ServiceCard = ({
-//   title,
-//   description,
-//   icon: Icon,
-// }: {
-//   title: string;
-//   description: string;
-//   icon: React.ElementType;
-// }) => (
-//   <motion.div
-//     variants={fadeInUp}
-//     className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col items-center text-center"
-//   >
-//     <Icon size={48} className="text-blue-500 mb-4" />
-//     <h3 className="text-xl font-semibold mb-2">{title}</h3>
-//     <p className="text-gray-600">{description}</p>
-//   </motion.div>
-// );
-
-// const Services = () => {
-//   const services = [
-//     {
-//       title: "Food Delivery",
-//       description: "Get your favorite meals delivered right to your doorstep.",
-//       icon: Utensils,
-//     },
-//     {
-//       title: "Grocery Delivery",
-//       description:
-//         "Fresh produce and household essentials, delivered conveniently.",
-//       icon: ShoppingCart,
-//     },
-//     {
-//       title: "Pharmacy Delivery",
-//       description:
-//         "Medications and health products delivered safely and promptly.",
-//       icon: BriefcaseMedical,
-//     },
-//     {
-//       title: "Express Delivery",
-//       description: "Urgent deliveries completed within hours.",
-//       icon: Zap,
-//     },
-//   ];
-
-//   return (
-//     <div className="flex w-full flex-col min-h-screen bg-gray-100">
-//       <Topnav />
-//       <main className="flex-grow">
-//         <motion.section
-//           initial="hidden"
-//           whileInView="visible"
-//           viewport={{ once: true, amount: 0.5 }}
-//           variants={fadeInUp}
-//           className="mb-12 px-4 py-12 bg-blue-600 text-white"
-//         >
-//           <h1 className="text-4xl font-bold text-center mb-4">Our Services</h1>
-//           <p className="text-xl text-center max-w-2xl mx-auto">
-//             We offer a range of convenient delivery services to meet your
-//             everyday needs.
-//           </p>
-//         </motion.section>
-
-//         <motion.section
-//           initial="hidden"
-//           whileInView="visible"
-//           viewport={{ once: true, amount: 0.5 }}
-//           variants={staggerChildren}
-//           className="mb-12 px-4"
-//         >
-//           <motion.h2
-//             variants={fadeInUp}
-//             className="text-2xl font-semibold mb-6 text-center"
-//           >
-//             What We Offer
-//           </motion.h2>
-//           <motion.div
-//             variants={staggerChildren}
-//             className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"
-//           >
-//             {services.map((service, index) => (
-//               <ServiceCard key={index} {...service} />
-//             ))}
-//           </motion.div>
-//         </motion.section>
-
-//         <motion.section
-//           initial="hidden"
-//           whileInView="visible"
-//           viewport={{ once: true, amount: 0.5 }}
-//           variants={staggerChildren}
-//           className="mb-12 px-4"
-//         >
-//           <motion.h2
-//             variants={fadeInUp}
-//             className="text-2xl font-semibold mb-6 text-center"
-//           >
-//             Browse by Category
-//           </motion.h2>
-//           <motion.div
-//             variants={staggerChildren}
-//             className="flex flex-wrap justify-center gap-4"
-//           >
-//             {categories.map((category, index) => (
-//               <motion.div key={index} variants={fadeInUp}>
-//                 <Link to={`/category/${category.text}`}>
-//                   <CategoryCard imageUrl={category.img} title={category.text} />
-//                 </Link>
-//               </motion.div>
-//             ))}
-//           </motion.div>
-//         </motion.section>
-
-//         <motion.section
-//           initial="hidden"
-//           whileInView="visible"
-//           viewport={{ once: true, amount: 0.5 }}
-//           variants={fadeInUp}
-//           className="mb-12 px-4 py-8 bg-white"
-//         >
-//           <h2 className="text-2xl font-semibold mb-4 text-center">
-//             Why Choose Us?
-//           </h2>
-//           <div className="max-w-2xl mx-auto">
-//             <ul className="space-y-4">
-//               {[
-//                 "Fast and reliable delivery",
-//                 "Wide range of services",
-//                 "User-friendly app with real-time tracking",
-//                 "Excellent customer support",
-//               ].map((item, index) => (
-//                 <motion.li
-//                   key={index}
-//                   variants={fadeInUp}
-//                   className="flex items-center bg-blue-100 p-4 rounded-lg"
-//                 >
-//                   <span className="mr-4 text-2xl">✅</span>
-//                   <span className="text-lg">{item}</span>
-//                 </motion.li>
-//               ))}
-//             </ul>
-//           </div>
-//         </motion.section>
-
-//         <motion.section
-//           initial="hidden"
-//           whileInView="visible"
-//           viewport={{ once: true, amount: 0.5 }}
-//           variants={fadeInUp}
-//           className="mb-12 px-4 py-8 bg-blue-600 text-white text-center"
-//         >
-//           <h2 className="text-2xl font-semibold mb-4">Ready to Get Started?</h2>
-//           <p className="text-lg mb-6">
-//             Experience the convenience of our delivery services today!
-//           </p>
-//           <button className="bg-white text-blue-600 font-semibold py-2 px-6 rounded-full hover:bg-blue-100 transition duration-300">
-//             Order Now
-//           </button>
-//         </motion.section>
-//       </main>
-//     </div>
-//   );
-// };
-
-// export default Services;
-
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
-import Topnav from "@/components/shared/topnav";
 import { categories } from "@/assets/data/home";
 import CategoryCard from "@/components/shared/category-card";
 import {
@@ -287,7 +99,6 @@ const Services = () => {
 
   return (
     <div className="flex w-full flex-col min-h-screen bg-gray-100">
-      <Topnav />
       <main className="flex-grow">
         <motion.section
           initial="hidden"
@@ -377,7 +188,7 @@ const Services = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Link to={`/category/${category.text}`}>
+                <Link to={`${category.path}`}>
                   <CategoryCard imageUrl={category.img} title={category.text} />
                 </Link>
               </motion.div>
