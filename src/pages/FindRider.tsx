@@ -55,6 +55,10 @@ const FindRiderPage: React.FC = () => {
   const [riders, setRiders] = useState<Rider[]>([]);
   const [selectedRider, setSelectedRider] = useState<Rider | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [currentCoords, setCurrentCoords] = useState({
+    lat: 0,
+    lng: 0,
+  });
 
   const API_KEY = process.env.REACT_APP_GOOGLE_PLACES_API_KEY || "";
   const MAP_ID = process.env.REACT_APP_GOOGLE_MAP_ID || "";
@@ -64,30 +68,57 @@ const FindRiderPage: React.FC = () => {
     libraries: libraries,
   });
 
+  useEffect(() => {
+    if (!isLoaded) return;
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setCurrentCoords({ lat: latitude, lng: longitude });
+        },
+        () => {
+          console.error("Error: The Geolocation service failed.");
+        }
+      );
+    } else {
+      console.error("Error: Your browser doesn't support geolocation.");
+    }
+  }, [isLoaded]);
+
   const fetchSampleRiders = useCallback(() => {
     // In a real application, this would be an API call
     const sampleRiders: Rider[] = [
       {
         id: 1,
         name: "John Doe",
-        location: { lat: 40.7128, lng: -74.006 },
+        location: {
+          lat: currentCoords.lat + 0.008,
+          lng: currentCoords.lng + 0.008,
+        },
         rating: 4.5,
       },
       {
         id: 2,
         name: "Jane Smith",
-        location: { lat: 40.7138, lng: -74.008 },
+        location: {
+          lat: currentCoords.lat - 0.003,
+          lng: currentCoords.lng - 0.003,
+        },
         rating: 4.8,
       },
       {
         id: 3,
         name: "Bob Johnson",
-        location: { lat: 40.7118, lng: -74.004 },
+        location: {
+          lat: currentCoords.lat + 0.005,
+          lng: currentCoords.lng + 0.005,
+        },
         rating: 4.2,
       },
     ];
     setRiders(sampleRiders);
-  }, []);
+  }, [currentCoords.lat, currentCoords.lng]);
 
   const calculatePrice = useCallback((distanceInMeters: number) => {
     const basePrice = 5; // Base price in dollars
@@ -164,7 +195,7 @@ const FindRiderPage: React.FC = () => {
       <div className="map-container mb-4" style={mapContainerStyle}>
         <GoogleMap
           mapContainerStyle={mapContainerStyle}
-          center={{ lat: 40.7128, lng: -74.006 }} // New York City coordinates
+          center={currentCoords}
           zoom={14}
           options={mapOptions}
         >
