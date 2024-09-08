@@ -15,4 +15,8 @@ export const topnavItems = [
     title: "Contact",
     path: "/contact",
   },
+  {
+    title: "Orders",
+    path: "/orders",
+  },
 ];
