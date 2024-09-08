@@ -309,7 +309,7 @@ const Home = () => {
           >
             {categories.map((category, index) => (
               <motion.div key={index} variants={fadeInUp}>
-                <Link to={`/category/${category.text}`}>
+                <Link to={`${category.path}`}>
                   <CategoryCard imageUrl={category.img} title={category.text} />
                 </Link>
               </motion.div>

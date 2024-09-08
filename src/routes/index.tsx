@@ -8,6 +8,10 @@ import AboutPage from "@/pages/About";
 import Contact from "@/pages/Contact";
 import DeliveryOrdersPage from "@/pages/Orders";
 import FindRiderPage from "@/pages/FindRider";
+import Restaurants from "@/pages/Restaurants";
+import Groceries from "@/pages/Groceries";
+import Supermarkets from "@/pages/Supermarkets";
+import Pharmacies from "@/pages/Pharmacies";
 // import Topnav from "@/components/shared/topnav";
 
 export default function AppRouter() {
@@ -35,6 +39,22 @@ export default function AppRouter() {
     {
       path: "/find-rider",
       element: <FindRiderPage />,
+    },
+    {
+      path: "/restaurants",
+      element: <Restaurants />,
+    },
+    {
+      path: "groceries",
+      element: <Groceries />,
+    },
+    {
+      path: "/supermarket",
+      element: <Supermarkets />,
+    },
+    {
+      path: "/pharmacies",
+      element: <Pharmacies />,
     },
   ];
 
