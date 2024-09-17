@@ -28,14 +28,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex w-full h-screen overflow-hidden">
       <SideNav
         isCollapsed={isCollapsed}
         toggleCollapse={toggleSidebar}
         isMobile={isMobile}
         closeMobileMenu={() => setIsCollapsed(true)}
       />
-      <div className="flex flex-col flex-grow">
+      <div className="flex w-full flex-col flex-grow">
         <TopNav user={user} toggleSidebar={toggleSidebar} />
         <main className="flex-grow p-6 bg-gray-100 overflow-auto w-full">
           {children}
