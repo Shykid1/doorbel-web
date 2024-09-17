@@ -14,6 +14,8 @@ import Supermarkets from "@/pages/Supermarkets";
 import Pharmacies from "@/pages/Pharmacies";
 import Topnav from "@/components/shared/topnav";
 import Layout from "@/components/layout";
+import Transactions from "@/pages/rider/Transactions";
+import Account from "@/pages/rider/Account";
 
 export default function AppRouter() {
   const publicRoutes = [
@@ -79,7 +81,6 @@ export default function AppRouter() {
 
   const protectedRoutes = [
     {
-      path: "/dashboard",
       element: (
         <Layout>
           <Suspense fallback={<div>Loading...</div>}>
@@ -89,8 +90,16 @@ export default function AppRouter() {
       ),
       children: [
         {
+          path: "/dashboard",
           element: <Overview />,
-          index: true,
+        },
+        {
+          path: "transactions",
+          element: <Transactions />,
+        },
+        {
+          path: "account",
+          element: <Account />,
         },
       ],
     },
