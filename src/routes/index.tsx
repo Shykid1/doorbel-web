@@ -16,6 +16,7 @@ import Topnav from "@/components/shared/topnav";
 import Layout from "@/components/layout";
 import Transactions from "@/pages/rider/Transactions";
 import Account from "@/pages/rider/Account";
+import SignUp from "@/pages/SignUp";
 
 export default function AppRouter() {
   const publicRoutes = [
@@ -75,7 +76,16 @@ export default function AppRouter() {
   const authRoutes = [
     {
       path: "/auth",
-      element: <Signin />,
+      children: [
+        {
+          path: "signin",
+          element: <Signin />,
+        },
+        {
+          path: "signup",
+          element: <SignUp />,
+        },
+      ],
     },
   ];
 

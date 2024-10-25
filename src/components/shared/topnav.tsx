@@ -107,7 +107,7 @@ const Topnav = () => {
                 <DropdownMenuLabel>Logout</DropdownMenuLabel>
               </>
             ) : (
-              <Link to="/auth" className="block">
+              <Link to="/auth/signin" className="block">
                 <DropdownMenuLabel>Login</DropdownMenuLabel>
               </Link>
             )}

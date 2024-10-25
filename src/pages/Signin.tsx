@@ -8,6 +8,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { LoaderCircle } from "lucide-react";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -49,8 +50,8 @@ const Signin: React.FC = () => {
     }
   };
   return (
-    <div className="w-full h-screen flex items-center justify-center">
-      <div className="w-[600px] border p-4">
+    <div className="w-screen h-screen flex items-center justify-center">
+      <div className="max-w-[600px] min-w-[400] border p-4">
         <h1 className="text-3xl font-bold mb-4 text-center">Sign in</h1>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -87,12 +88,28 @@ const Signin: React.FC = () => {
               />
             </div>
             <div className="w-full flex items-center justify-center">
-              <Button type="submit" className="mt-4">
+              <Button type="submit" className="mt-4 gap-2">
+                {form.formState.isSubmitting ? (
+                  <LoaderCircle className="animate-spin" />
+                ) : null}
                 Sign in
               </Button>
             </div>
           </form>
         </Form>
+        <div className="text-center w-full">
+          <p className="mt-4 text-muted-foreground">
+            Don't have an account?{" "}
+            <Button
+              onClick={() => {
+                navigate("/auth/signup");
+              }}
+              className="text-blue-500 bg-transparent hover:bg-transparent"
+            >
+              Sign up
+            </Button>
+          </p>
+        </div>
       </div>
     </div>
   );
