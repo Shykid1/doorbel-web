@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Outlet, useRoutes } from "react-router-dom";
-import Auth from "@/pages/Auth";
+import Signin from "@/pages/Signin";
 import Overview from "@/pages/rider";
 import Home from "@/pages/Home";
 import Services from "@/pages/Services";
@@ -75,7 +75,7 @@ export default function AppRouter() {
   const authRoutes = [
     {
       path: "/auth",
-      element: <Auth />,
+      element: <Signin />,
     },
   ];
 

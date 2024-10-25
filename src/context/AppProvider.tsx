@@ -82,10 +82,12 @@ export const PlacesProvider: React.FC<{ children: React.ReactNode }> = ({
     });
   };
 
+  const baseUrl = process.env.BASE_URL;
+
   // https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${location.latitude},${location.longitude}&radius=35000&type=${type}&key=${API_KEY}
   const fetchPlaces = useCallback(
     async (type: PlaceType, location: Location): Promise<Place[]> => {
-      const url = `https://doorbel.up.railway.app/places/nearbysearch/json?location=${location.latitude},${location.longitude}&radius=35000&type=${type}`;
+      const url = `${baseUrl}/places/nearbysearch/json?location=${location.latitude},${location.longitude}&radius=35000&type=${type}`;
 
       try {
         const response = await fetch(url, {
