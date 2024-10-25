@@ -125,7 +125,7 @@ export const PlacesProvider: React.FC<{ children: React.ReactNode }> = ({
         throw new Error(`Failed to fetch ${type}s: ${error}`);
       }
     },
-    []
+    [baseUrl]
   );
 
   const refreshPlaces = useCallback(
