@@ -88,7 +88,7 @@ const AboutPage = () => {
     { year: 2018, users: 1000 },
     { year: 2019, users: 5000 },
     { year: 2020, users: 20000 },
-    { year: 2021, users: 55000 },
+    { year: 2021, users: 50000 },
     { year: 2022, users: 100000 },
     { year: 2023, users: 200000 },
   ];
