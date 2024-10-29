@@ -107,7 +107,7 @@ const AboutPage = () => {
     {
       question: "How can I become a delivery partner?",
       answer:
-        "To become a delivery partner, visit our 'Join Our Team' page and fill out the application form. We'll review your information and get back to you soon!",
+        "To become a delivery partner, visit our 'Join Our Team' page and fill out the application form. We'll review your information and get back to you as soon as possible!",
     },
   ];
 
